@@ -61,8 +61,8 @@ module.exports = {
       origin:"*",
       maxAge:20*24*60*60 //20 days like elastic
     }))
-    app.use("/api/movies", SearchkitExpress.createRouter({
-      host, index:"movies"
+    app.use("/api/hpp", SearchkitExpress.createRouter({
+      host, index:"hpp"
     }))
 
     app.use("/api/crimes", SearchkitExpress.createRouter({

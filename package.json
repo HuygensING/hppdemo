@@ -11,7 +11,7 @@
     "test:e2e": "rm -rf test/e2e/generated; tsc -p test/e2e; protractor test/e2e/config/protractor.conf.js"
   },
   "engines": {
-    "node":"6.7.x"
+    "node": "6.7.x"
   },
   "author": "",
   "license": "MIT",
@@ -36,6 +36,7 @@
     "react-google-maps": "^4.7.2",
     "react-hot-loader": "^1.3.0",
     "searchkit": "^2.1.0",
+    "searchkit-daterangefilter": "0.0.2",
     "searchkit-express": "^0.2.1"
   },
   "devDependencies": {

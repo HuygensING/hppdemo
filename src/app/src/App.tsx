@@ -29,50 +29,53 @@ import {
   ActionBar, ActionBarRow
 } from "searchkit";
 
+import {DetailView} from "./DetailView";
+
 import "./../styles/customisations.scss";
 import "searchkit/theming/theme.scss";
 
-import {MovieHitsGridItem, MovieHitsListItem} from "./ResultComponents"
+import { MovieHitsGridItem, MovieHitsListItem } from "./ResultComponents"
 import { DateRangeFilter } from "searchkit-daterangefilter"
 
 
 export class App extends React.Component<any, any> {
 
-  searchkit:SearchkitManager
+  searchkit: SearchkitManager
 
   constructor() {
     super()
     const host = "/api/hpp"
     this.searchkit = new SearchkitManager(host)
-    this.searchkit.translateFunction = (key)=> {
-      return {"pagination.next":"Next Page", "pagination.previous":"Previous Page"}[key]
+    this.searchkit.translateFunction = (key) => {
+
+      return { "pagination.next": "Next Page", "pagination.previous": "Previous Page" }[key]
     }
   }
 
 
-  render(){
-
+  render() {
+    console.log("rerender!")
     return (
       <SearchkitProvider searchkit={this.searchkit}>
         <Layout size="l">
           <TopBar>
             <div className="my-logo">Historisch Personen Portaal</div>
             <SearchBox
-              translations={{"searchbox.placeholder":"Persoonsnaam..."}}
+              translations={{ "searchbox.placeholder": "Persoonsnaam..." }}
               autofocus={true}
               searchOnChange={true}
-              queryFields={["owl_sameAs_inverse.items.schema_familyName.value^1"]}/>
+              queryFields={["owl_sameAs_inverse.items.schema_familyName.value^1"]} />
           </TopBar>
 
           <LayoutBody>
 
-      			<SideBar>
-              <DateRangeFilter min={1500} max={2000} field="owl_sameAs_inverse.items.schema_birthDate.value" id="birthdate" title="Geboortedatum" interval="year" showHistogram={true}/>
-              <DateRangeFilter min={1500} max={2000} field="owl_sameAs_inverse.items.schema_deathDate.value" id="deathdate" title="Overlijdensdatum" interval="year" showHistogram={true}/>
-              <RefinementListFilter id="schema_birthPlace" title="Geboorteplaats" field="owl_sameAs_inverse.items.schema_birthPlace.schema_name.value.raw" operator="OR" size={10}/>
-              <RefinementListFilter id="schema_deathPlace" title="Overlijdensplaats" field="owl_sameAs_inverse.items.schema_deathPlace.schema_name.value.raw" operator="OR" size={10}/>
-              <RefinementListFilter id="tim_dataSetName" title="Bron" field="owl_sameAs_inverse.items.tim_dataSetName.value.raw" operator="OR" size={10}/>
-      				{/*<HierarchicalMenuFilter fields={["type.raw", "genres.raw"]} title="Categories" id="categories"/>
+            <SideBar>
+              <DateRangeFilter min={1500} max={2000} field="owl_sameAs_inverse.items.schema_birthDate.value" id="birthdate" title="Geboortedatum" interval="year" showHistogram={true} />
+              <DateRangeFilter min={1500} max={2000} field="owl_sameAs_inverse.items.schema_deathDate.value" id="deathdate" title="Overlijdensdatum" interval="year" showHistogram={true} />
+              <RefinementListFilter id="schema_birthPlace" title="Geboorteplaats" field="owl_sameAs_inverse.items.schema_birthPlace.schema_name.value.raw" operator="OR" size={10} />
+              <RefinementListFilter id="schema_deathPlace" title="Overlijdensplaats" field="owl_sameAs_inverse.items.schema_deathPlace.schema_name.value.raw" operator="OR" size={10} />
+              <RefinementListFilter id="tim_dataSetName" title="Bron" field="owl_sameAs_inverse.items.tim_dataSetName.value.raw" operator="AND" size={10} />
+              {/*<HierarchicalMenuFilter fields={["type.raw", "genres.raw"]} title="Categories" id="categories"/>
               <RangeFilter min={0} max={100} field="metaScore" id="metascore" title="Metascore" showHistogram={true}/>
               <RangeFilter min={0} max={10} field="imdbRating" id="imdbRating" title="IMDB Rating" showHistogram={true}/>
               <RefinementListFilter id="actors" title="Actors" field="actors.raw" operator="OR" size={10}/>
@@ -86,40 +89,42 @@ export class App extends React.Component<any, any> {
               ]}/>*/}
             </SideBar>
 
-      			<LayoutResults>
+            <LayoutResults>
+              <DetailView>
+                <ActionBar>
 
-              <ActionBar>
+                  <ActionBarRow>
+                    <HitsStats translations={{
+                      "hitstats.results_found": "{hitCount} resultaten"
+                    }} />
+                  </ActionBarRow>
+                  <ActionBarRow>
+                    <SelectedFilters />
+                    <ResetFilters translations={{ "reset.clear_all": "Verwijder alle filters" }} />
+                  </ActionBarRow>
 
-                <ActionBarRow>
-          				<HitsStats translations={{
-                    "hitstats.results_found":"{hitCount} resultaten"
-                  }}/>
-                </ActionBarRow>
-                <ActionBarRow>
-                  <SelectedFilters/>
-                  <ResetFilters translations={{"reset.clear_all": "Verwijder alle filters"}}/>
-                </ActionBarRow>
+                </ActionBar>
 
-              </ActionBar>
-
-              <ViewSwitcherHits
-      				    hitsPerPage={12} 
-                  highlightFields={["owl_sameAs_inverse.items.schema_familyName.value"]}
-                  sourceFilter={["owl_sameAs_inverse.items.schema_familyName.value"]}
-                  hitComponents = {[
-                    {key:"list", title:"List", itemComponent:MovieHitsListItem}
+                <ViewSwitcherHits
+                  hitsPerPage={12}
+                  highlightFields={["owl_sameAs_inverse.items.schema_familyName.value", "uri"]}
+                  sourceFilter={["owl_sameAs_inverse.items.schema_familyName.value", "uri"]}
+                  hitComponents={[
+                    { key: "list", title: "List", itemComponent: MovieHitsListItem }
                   ]}
                   scrollTo="body"
-              />
+                />
 
-              <NoHits suggestionsField={"owl_sameAs_inverse.items.schema_familyName.value"}/>
-              <InitialLoader/>
-      				<Pagination showNumbers={true}/>
-      			</LayoutResults>
+                <NoHits suggestionsField={"owl_sameAs_inverse.items.schema_familyName.value"} />
+                <InitialLoader />
+                <Pagination showNumbers={true} />
+              </DetailView>
+            </LayoutResults>
           </LayoutBody>
-    			<a className="view-src-link" href="https://github.com/searchkit/searchkit-demo/blob/master/src/app/src/App.tsx">View source »</a>
-    		</Layout>
+          <a className="view-src-link" href="https://github.com/searchkit/searchkit-demo/blob/master/src/app/src/App.tsx">View source »</a>
+        </Layout>
       </SearchkitProvider>
-	)}
+    )
+  }
 
 }

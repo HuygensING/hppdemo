@@ -27,66 +27,51 @@ export class DetailView extends React.Component<any, any> {
 
   componentDidMount() {
 
-    fetch("http://localhost:8080/v5/DUMMY/hpp3demo/graphql", {
+    fetch("http://462df71a.ngrok.io/timbuctoo/v5/DUMMY/hpp8demo/graphql", {
       method: "POST",
       headers: {
         Accept: "application/json"
       },
       body: `{
-          timdata_NDE_HPP_viaf(uri:"${this.viaf_uri}"){
-            uri
-            owl_sameAs_inverse {
-              items {
-                ... on  timdata_NDE_HPP_hoogleraren_uva {
-                schema_givenName { value type }
-                  schema_familyName { value type }
-                  tim_dataSetName {
-                    value
-                    type
-                  }
-                  tim_postposition { value type }
-                  schema_birthDate { value type }
-                  schema_deathDate { value type }
-                  schema_birthPlace {
-                    schema_name {
-                      value
-                      type
-                    }
-                  }
-                  schema_deathPlace {
-                    schema_name {
-                      value
-                      type
-                    }
-                  }
-                }
-                ... on timdata_NDE_HPP_Delftse_hoogleraren { 
-                  schema_givenName { value type }
-                  schema_familyName { value type }
-                  tim_dataSetName {
-                    value
-                    type
-                  }
-                  tim_postposition { value type }
-                  schema_birthDate { value type }
-                  schema_deathDate { value type }
-                  schema_birthPlace {
-                    schema_name {
-                      value
-                      type
-                    }
-                  }
-                  schema_deathPlace {
-                    schema_name {
-                      value
-                      type
-                    }
-                  }
-                }
-              }
+        timdata_NDE_HPP_viaf(uri:"${this.viaf_uri}"){
+          uri
+          owl_sameAs_inverse {
+            items {
+              timdata_NDE_HPP_hoogleraren_uva_Opmerkingen { value } 
+              schema_birthPlace {  
+                ... on timdata_NDE_HPP_Places {
+                  schema_name { value }  
+                } 
+              } 
+              schema_deathPlace {  
+                ... on timdata_NDE_HPP_Places {    
+                  schema_name { value }  
+                } 
+              } 
+              tim_ERFGOED { value } 
+              schema_deathDate { value } 
+              schema_givenName { value }
+              tim_postposition { value }
+              timdata_NDE_HPP_Hoogleraren_archieven_inventaris__papier__met_titel { value } 
+              timdata_NDE_HPP_hoogleraren_uva_Nationaliteit { value } 
+              tim_Faculteit_Afdeling { value } 
+              timdata_NDE_HPP_hoogleraren_uva_PPNAlgemeen { value } 
+              timdata_NDE_HPP_Hoogleraren_archieven_instelling_bewaarplaats { value } 
+              schema_familyName { value } 
+              timdata_DUMMY_oorlogsgraven_OGS_sub1_Begraafplaats { value } 
+              timdata_NDE_HPP_Hoogleraren_archieven_informatie_over_verwerving { value } 
+              timdata_DUMMY_oorlogsgraven_OGS_sub1_Bron { value } tim_Ambtsperiode { value } 
+              tim_Leeropdracht { value } 
+              tim_Aanstelling { value } 
+              tim_intraposition { value } 
+              schema_birthDate { value } 
+              schema_gender { value } 
+              tim_dataSetName { value } 
+              timdata_NDE_HPP_Hoogleraren_archieven_bewaarplaats { value }
             }
           }
-        }`
+        }
+      }`
     }).then(response => {
       return response.json();
     }).then(data => this.setState(prev => ({...prev, data: data})));
